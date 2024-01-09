@@ -4,7 +4,7 @@ import torch
 # Load BioBERT model and tokenizer
 tokenizer = BertTokenizer.from_pretrained('monologg/biobert_v1.1_pubmed', do_lower_case=False)
 model = BertForTokenClassification.from_pretrained('monologg/biobert_v1.1_pubmed', num_labels=2)  # Assuming 2 labels for 'DISEASE' and 'DRUG'
-
+print(tokenizer.convert_ids_to_tokens(range(model.config.num_labels)))
 # Function to extract entities from a text
 def extract_entities(text):
     inputs = tokenizer(text, return_tensors="pt", truncation=True)
@@ -36,3 +36,4 @@ drugs = [entity[0] for entity in entities if entity[1] == 'DRUG']
 # Print the results
 print("Diseases:", diseases)
 print("Drugs:", drugs)
+
