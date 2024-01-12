@@ -24,7 +24,7 @@
 # encrypted_code = encrypt(original_code, key)
 # print(encrypted_code)
 
-
+# Finding and solving the error 
 def encrypt(text, key):
     encrypted_text = ""
     for char in text:
@@ -44,6 +44,8 @@ def encrypt(text, key):
         else:
             encrypted_text += char
     return encrypted_text
+    
+# Using decrypt function to find the encrypted key 
 
 def decrypt(encrypted_text, key):
     decrypted_text = ""
