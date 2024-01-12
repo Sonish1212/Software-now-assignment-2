@@ -1,3 +1,5 @@
+# The given code that have errors
+
 # def encrypt(text, key):
 #     encrypted_text =""
 #     for char in text:
