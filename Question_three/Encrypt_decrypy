@@ -1,0 +1,31 @@
+def encrypt(text, key):
+  encrypted_text = ""
+
+  for char in text:
+    if char.isalpha():
+      shifted = ord(char) + key
+      if char.islower():
+        if shifted > ord('z'):
+          shifted -= 26
+        elif shifted < ord('a'):
+          shifted += 26
+      elif char.isupper():
+        if shifted > ord('Z'):
+          shifted -= 26
+        elif shifted < ord('A'):
+          shifted += 26
+      encrypted_text += chr(shifted)
+    else:
+      encrypted_text += char
+
+  return encrypted_text
+
+# This code appears to be unrelated to the encryption/decryption functionality
+# and can be removed or moved to a separate function.
+
+# Decrypt the encrypted code using the same algorithm with a negative key
+
+decrypted_text = encrypt(encrypted_code, -key)
+
+print("Encrypted text:", encrypted_text)
+print("Decrypted text:", decrypted_text)
