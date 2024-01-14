@@ -11,3 +11,12 @@ In Task-2 from the text file we get from task-1 top 30 words were extracted and 
 Here a function was created to open the file and to process the text in file after that to find the top 30 repeated words and to store those words in a csv file using the csv library.
 At the end the function was call and the parameters were inserted to get the final top 30 words from the text file.
 
+
+In Task-4 there we have to compare two of the models for finding the drugs and disease entities from the huge text file. While running the both code i understand about tthe proessing speed of both of the models. 
+While using biobert which is basically a model that is specially used for the extraction of medical words and entites the processing was much faster and the memory usage was a bit less than en_core_sci_sm.
+While using biobert i find the result as follows:
+
+<img width="1388" alt="Screenshot 2024-01-14 at 2 05 30 PM" src="https://github.com/Sonish1212/Software-now-assignment-2/assets/69333078/1674b82f-879b-43c8-a93e-f7da4c8b5e80">
+
+But while using the en_core_sci_sm the processing was too slow and there was problem with the memory usage after using cprofile, batch and chunks for processing the text much faster the computer memory couldnot hold and it always ends up saying killed:9
+
