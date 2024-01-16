@@ -1,57 +1,36 @@
-from transformers import BertTokenizer, BertModel, BertConfig
+from transformers import AutoTokenizer
 from collections import Counter
-import pandas as pd
-import concurrent.futures
+from concurrent.futures import ProcessPoolExecutor
 
-def tokenize_and_count(tokens):
+def tokenize_and_count(chunk, model_name):
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    tokens = tokenizer.tokenize(tokenizer.decode(tokenizer.encode(chunk)))
     return Counter(tokens)
 
-def count_and_get_top_words(file_path, model_name, max_seq_length=512, top_n=30, batch_size=8):
-    # Load the tokenizer
-    tokenizer = BertTokenizer.from_pretrained(model_name, config=BertConfig.from_json_file('/Users/nandukhanal/Documents/Classworks/Semester-1/Software Now/biobert_v1.1_pubmed/bert_config.json'))
-
-    # Read text from the file
+def read_chunks(file_path, chunk_size=10 * 1024 * 1024):
     with open(file_path, 'r', encoding='utf-8') as file:
-        text = file.read()
+        while True:
+            chunk = file.read(chunk_size)
+            if not chunk:
+                break
+            yield chunk
 
-    # Split text into chunks of max_seq_length
-    chunks = [text[i:i + max_seq_length] for i in range(0, len(text), max_seq_length)]
+def count_and_display_top_tokens(file_path, model_name, top_n=30, num_processes=2):
+    # Tokenize and count in parallel
+    if __name__ == '__main__':
+        with ProcessPoolExecutor(max_workers=num_processes) as executor:
+            token_counters = list(executor.map(tokenize_and_count, read_chunks(file_path), [model_name] * num_processes))
 
-    # Tokenize chunks in batches
-    tokenized_batches = [tokenizer.encode(chunk) for chunk in chunks]
+        # Combine the results
+        combined_counter = sum(token_counters, Counter())
 
-    # Flatten the list of batches into a single list of tokens
-    all_tokens = [token for batch in tokenized_batches for token in batch]
+        # Display the top N tokens
+        top_tokens = combined_counter.most_common(top_n)
+        print(f"Top {top_n} tokens:")
+        for token, count in top_tokens:
+            print(f"{token}: {count}")
 
-    # Use ThreadPoolExecutor for parallel token counting
-    with concurrent.futures.ThreadPoolExecutor() as executor:
-        # Batch tokens for parallel processing
-        token_batches = [all_tokens[i:i + batch_size] for i in range(0, len(all_tokens), batch_size)]
-
-        # Submit batches to the executor for parallel processing
-        futures = [executor.submit(tokenize_and_count, tokens) for tokens in token_batches]
-
-        # Initialize an empty Counter for token counts
-        total_token_counts = Counter()
-
-        # Collect results as they become available
-        for future in concurrent.futures.as_completed(futures):
-            token_counts = future.result()
-            total_token_counts += token_counts
-
-    # Get the top 30 tokens
-    top_tokens = total_token_counts.most_common(top_n)
-
-    # Create a DataFrame for visualization
-    df = pd.DataFrame(top_tokens, columns=['Token', 'Count'])
-
-    return df
-
-# Replace 'your_text_file.txt' and 'bert-base-uncased' with your file path and model name
-file_path = 'all_csv_file.txt'
-model_path = '/Users/nandukhanal/Documents/Classworks/Semester-1/Software Now/biobert_v1.1_pubmed'
-
-result_df = count_and_get_top_words(file_path, model_path)
-
-# Display the top 30 words
-print(result_df)
+# Example usage:
+file_path = '/Users/nandukhanal/Documents/Classworks/Semester-1/Software Now/Assingment-2/Question-one/all_csv_file.txt'
+model_name = 'bert-base-uncased'  # You can use any model name from the transformers library
+count_and_display_top_tokens(file_path, model_name)
