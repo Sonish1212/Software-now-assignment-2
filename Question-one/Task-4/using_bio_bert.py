@@ -15,7 +15,7 @@ def extract_entities(text):
     entities = []
     for token, prediction in zip(inputs["input_ids"][0], predictions[0]):
         token_str = tokenizer.convert_ids_to_tokens(token.item())
-        label = 'DISEASE' if prediction == 1 else 'DRUG' if prediction == 2 else 'O'
+        label = 'DISEASE' if torch.eq(prediction, torch.tensor(1)) else 'DRUG' if torch.eq(prediction, torch.tensor(0)) else 'O'
         
         if label != 'O':
             entities.append((token_str, label))
@@ -23,7 +23,7 @@ def extract_entities(text):
     return entities
 
 # Process the text file
-file_path = 'all_csv_file.txt'  # Replace with the actual path to your text file
+file_path = '/Users/nandukhanal/Documents/Classworks/Semester-1/Software Now/Assingment-2/Question-one/all_csv_file.txt'  # Replace with the actual path to your text file
 
 with open(file_path, 'r', encoding='utf-8') as file:
     text = file.read()
@@ -36,4 +36,3 @@ drugs = [entity[0] for entity in entities if entity[1] == 'DRUG']
 # Print the results
 print("Diseases:", diseases)
 print("Drugs:", drugs)
-
