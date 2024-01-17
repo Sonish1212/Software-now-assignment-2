@@ -6,3 +6,4 @@ The sum of red pixel values in the new image is calculated.
 red_pixel_sum = sum(new_image.getpixel((x, y))[0] for x in range(width) for y in range(height))
 The final sum is then printed:
 print("Sum of red pixel values:", red_pixel_sum).
+![416121808_743866484019812_9027364188248165892_n](https://github.com/Sonish1212/Software-now-assignment-2/assets/153173641/01b9ba23-6c7d-4093-8698-0ee71d3fc6e5)
